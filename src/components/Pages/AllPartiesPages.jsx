@@ -28,9 +28,6 @@ const partiesContainerStyle = {
 const partiesListStyle = {
 boxShadow: "2px 2px 4px #eaeaea",
 width:"85%"
- 
-
-
 
 }
 const partiesFormStyle = {
