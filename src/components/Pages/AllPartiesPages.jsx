@@ -42,15 +42,15 @@ const partiesFormStyle = {
           <h1>Parties List!!</h1>
           <ul>
             <Link to="/party" >
-            <li>Party 1</li>
+            <List>Party 1</List>
             </Link>
             
             <Link to="/party" >
-            <li>Party 2</li>
+            <List>Party 2</List>
             </Link>
             
             <Link to="/party" >
-            <li>Party 3</li>
+            <List>Party 3</List>
             </Link>
             
           </ul>
@@ -127,4 +127,9 @@ const Content = styled.div`
   @media (max-width: 768px) {
     display: ${({ visible }) => visible ? 'block' : 'none'};
   }
+`;
+
+const List=styled.li`
+border-bottom:0.25px solid gray;
+
 `;
