@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { addUser, removeUser, setUser } from '../../store/slices/userSlice';
 import axios from 'axios';
 import { useEffect } from 'react';
+import db from "../../../db.json";
 
 
 
@@ -59,6 +60,16 @@ export default function AllPartiesPages() {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    
+    const partiesName=db.parties.map((party)=>{
+      return(
+        party.name.trim()
+      )
+    })
+    console.log(partiesName);
+    if (partiesName.indexOf(inputName.trim()) >-1) {
+      return alert(`This user has already been added!!!!`)
+    }
 
     const partyObject = {
       name: inputName,
@@ -118,8 +129,8 @@ console.log(user);
           <h1>Parties List!!</h1>
 
           <ul>
-            <Link to="/party" >
               {user.map((users, index) => (
+            <Link to={`/party?id=${users.id}`} >
                 <List key={index} >
                   {users.name}
                   <span onClick={(event) => {
@@ -129,14 +140,14 @@ console.log(user);
                   } ><AiTwotoneDelete className="delete-btn" /></span>
                 </List>
 
-              ))}
             </Link>
+              ))}
           </ul>
         </Contentbox1>
 
 
         <Contentbox2 style={partiesFormStyle}>
-          <p onClick={handleToggle} ><FiChevronsDown/>Add New Party</p>
+          <h3 onClick={handleToggle} ><FiChevronsDown/>Add New Party</h3>
           <Content visible={visible} >
             <form onSubmit={handleSubmit}>
               <Input value={inputName} onChange={handleInputName} placeholder='Name' type="text" />

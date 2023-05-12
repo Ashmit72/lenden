@@ -1,41 +1,42 @@
 {
   "parties": [
     {
-      "name": "Ashmit",
+      "name": "Ashmit Bastola",
       "phone": "9813663984",
       "adress": "Thimi",
-      "id": 0.28175963689203354
+      "id": 0.05494160193297748
     },
     {
-      "name": "Dad",
-      "phone": "9851159387",
-      "adress": "Jhapa",
-      "id": 0.34668670680850533
+      "name": "Pratik Khadka",
+      "phone": "9813663984",
+      "adress": "Bhaisipati",
+      "id": 0.6963919080325435
     },
     {
-      "name": "Mom",
-      "phone": "9841927580",
-      "adress": "Ilam",
-      "id": 0.7601234240187653
-    },
-    {
-      "name": "Sis",
-      "phone": "9860719904",
-      "adress": "Sarlahi",
-      "id": 0.17452463009801356
+      "name": "Ayush Maharjan",
+      "phone": "9813663984",
+      "adress": "Haatiban",
+      "id": 0.48454801193680563
     }
   ],
   "payDetails": [
     {
-      "partyName": "Ashmit",
-      "paiddate": "2023-05-12",
+      "partyName": "Pratik Khadka",
+      "paidDate": "2023-05-12",
       "paidAmount": "5000",
-      "dueAmount": "2000",
-      "description": "Some Amount Paid",
+      "dueAmount": "1000",
+      "description": "Paid to Pratik Khadka",
       "id": 1
     }
   ],
-  "recieveDetails":[
-    
+  "recieveDetails": [
+    {
+      "partyName": "Ayush Maharjan",
+      "recievedDate": "2023-05-12",
+      "recievedAmount": "5000",
+      "dueAmount": "0",
+      "description": "Recieved From Ayush Maharjan",
+      "id": 1
+    }
   ]
 }

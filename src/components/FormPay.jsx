@@ -35,7 +35,7 @@ function FormPay() {
   
   const handleSubmit= async (event)=>{
     event.preventDefault();
-  s
+  
     const partiesName=db.parties.map((party)=>{
       return(
         party.name

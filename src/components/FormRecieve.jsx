@@ -23,7 +23,7 @@ function FormRecieve() {
     setDate(event.target.value);
   }
   const handleRecieveChange=(event)=>{
-    setPay(event.target.value);
+    setRecieve(event.target.value);
   }
   const handleDueChange=(event)=>{
     setDue(event.target.value);

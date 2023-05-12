@@ -1,27 +1,35 @@
 import styled from 'styled-components';
 import {FcLeftDown} from "react-icons/fc";
 import {FcRightUp} from "react-icons/fc";
-
-
-
+import db from "../../db.json";
 
 
 
 
 function MyCard() {
+
+  const totalPaidAmount=db.payDetails.reduce(
+    (acc,curr)=>acc+parseInt(curr.paidAmount)
+    ,0
+  );
+  const totalRecieveAmount=db.recieveDetails.reduce(
+    (acc,curr)=>acc+parseInt(curr.recievedAmount)
+    ,0
+  );
+  
+
   return (
     <Wrapper >
-    
     <Card>
       <div><FcLeftDown style={{fontSize:"2rem"}} /></div>
     <Title>Recieved</Title>
-    <div>Rs.0000</div>
+    <div>Rs.{totalRecieveAmount}</div>
     </Card>
     
     <Card>    
 <div><FcRightUp style={{fontSize:"2rem"}} /></div>
 <Title>Paid</Title>
-<div>Rs.0000</div>
+<div>Rs.{totalPaidAmount}</div>
     </Card>
     
     
