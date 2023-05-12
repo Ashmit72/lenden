@@ -50,7 +50,7 @@ function FormRecieve() {
       description:desc,
     };
     try{
-    await axios.post("http://localhost:5179/recieveDetails",recieveDetailsObject)
+    await axios.post("http://192.168.254.156:5179/recieveDetails",recieveDetailsObject)
     dispatch(addUserRecieveDetails({partyName:name,recievedDate:date,recievedAmount:recieve,dueAmount:due,description:desc}))
     setName('');
     setDate('');
@@ -73,7 +73,7 @@ function FormRecieve() {
       <Input onChange={handleRecieveChange}value={recieve} type="number" placeholder="Amount Recieved" required />
       <Input onChange={handleDueChange}   value={due} type="number" placeholder="Amount Due" required />
       <Input onChange={handleDescChange}  value={desc} type="text" placeholder="Description" required />
-      <Button type="submit">Recieve</Button>
+      <Button onClick={handleSubmit} type="submit">Recieve</Button>
     </Container>
   );
 }

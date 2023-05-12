@@ -79,7 +79,7 @@ export default function AllPartiesPages() {
     };
     try {
 
-      await axios.post("http://localhost:5179/parties", partyObject)
+      await axios.post("http://192.168.254.156:5179/parties", partyObject)
       dispatch(addUser({ name: inputName, phone: inputPhone, adress: inputAdress,id:userId}))
       setInputName('');
       setInputPhone('');
@@ -102,13 +102,13 @@ export default function AllPartiesPages() {
   const deleteUser = async (id) => {
     console.log(id);
     dispatch(removeUser(id))
-    await axios.delete(`http://localhost:5179/parties/${id}`)
+    await axios.delete(`http://192.168.254.156:5179/parties/${id}`)
   }
 
 
   const getUser = async () => {
     try {
-      const res = await axios.get("http://localhost:5179/parties");
+      const res = await axios.get("http://192.168.254.156:5179/parties");
       dispatch(setUser(res.data));
 
     } catch (error) {
@@ -123,11 +123,8 @@ console.log(user);
     <div>
       <MyCard />
       <Container2 style={partiesContainerStyle}>
-
-
         <Contentbox1 style={partiesListStyle}>
           <h1>Parties List!!</h1>
-
           <ul>
               {user.map((users, index) => (
             <Link to={`/party?id=${users.id}`} >

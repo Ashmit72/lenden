@@ -56,7 +56,7 @@ function FormPay() {
     };
 
     try{
-      await axios.post("http://localhost:5179/payDetails",payDetailsObject) 
+      await axios.post("http://192.168.254.156:5179/payDetails",payDetailsObject) 
       dispatch(addUserPayDetails({partyName:name,paidDate:date,paidAmount:pay,dueAmount:due,description:desc}))
       setName('');
       setDate('');
@@ -80,7 +80,7 @@ function FormPay() {
       <Input onChange={handlePayChange}  value={pay} type="number" placeholder="Amount Paid" required />
       <Input onChange={handleDueChange}  value={due} type="number" placeholder="Amount Due" required />
       <Input onChange={handleDescChange} value={desc} type="text" placeholder="Description" required />
-      <Button type="submit">Pay</Button>
+      <Button onClick={handleSubmit} type="submit">Pay</Button>
     </Container>
   );
 }
