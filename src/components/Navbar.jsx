@@ -8,6 +8,40 @@ import { Link } from 'react-router-dom';
 
 
 
+
+
+function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => setIsOpen(!isOpen);
+
+ const handleMenuItemClick=()=>{
+  if (window.innerWidth<=768) {
+    toggleMenu()
+  }
+ }
+
+
+
+  
+  return (
+    <Nav>
+      <Logo> <Link to="/" className="lenden-text" > <img style={{height:"1.5rem"}} src={LogoImage} alt=""  /> LenDen </Link> </Logo>
+      <MenuIcon onClick={toggleMenu}>
+        <i className="fa fa-bars"></i>
+      </MenuIcon>
+      <Menu isOpen={isOpen}>
+        <Link to="/" onClick={handleMenuItemClick}  ><MenuItem><FiHome/>Home</MenuItem></Link>
+       <Link to="/about" onClick={handleMenuItemClick} > <MenuItem ><BiErrorCircle/>About Us</MenuItem></Link>
+        <Link to="/parties" onClick={handleMenuItemClick} ><MenuItem ><FaRegUser/>All Parties</MenuItem></Link>
+      </Menu>
+    </Nav>
+  );
+}
+
+export default Navbar;
+
+
 const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
@@ -68,34 +102,3 @@ const MenuItem = styled.div`
     margin: 10px 0;
   }
 `;
-
-function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleMenu = () => setIsOpen(!isOpen);
-
- const handleMenuItemClick=()=>{
-  if (window.innerWidth<=768) {
-    toggleMenu()
-  }
- }
-
-
-
-  
-  return (
-    <Nav>
-      <Logo> <Link to="/" className="lenden-text" > <img style={{height:"1.5rem"}} src={LogoImage} alt=""  /> LenDen </Link> </Logo>
-      <MenuIcon onClick={toggleMenu}>
-        <i className="fa fa-bars"></i>
-      </MenuIcon>
-      <Menu isOpen={isOpen}>
-        <Link to="/" onClick={handleMenuItemClick}  ><MenuItem><FiHome/>Home</MenuItem></Link>
-       <Link to="/about" onClick={handleMenuItemClick} > <MenuItem ><BiErrorCircle/>About Us</MenuItem></Link>
-        <Link to="/parties" onClick={handleMenuItemClick} ><MenuItem ><FaRegUser/>All Parties</MenuItem></Link>
-      </Menu>
-    </Nav>
-  );
-}
-
-export default Navbar;

@@ -1,19 +1,78 @@
-import React, { useRef } from 'react';
+import React, { useRef,useState } from 'react';
 import styled from 'styled-components';
-
+import db from "../../db.json";
+import { addUserRecieveDetails } from '../store/slices/userSlice';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
 
 
 function FormRecieve() {
+  
+  const [name,setName]=useState('');
+  const [date,setDate]=useState('');
+  const [recieve,setRecieve]=useState('');
+  const [due,setDue]=useState('');
+  const [desc,setDesc]=useState('')
   const dateRef = useRef();
+  const dispatch=useDispatch()
+
+  const handleNameChange=(event)=>{
+    setName(event.target.value);
+  }
+  const handleDateChange=(event)=>{
+    setDate(event.target.value);
+  }
+  const handleRecieveChange=(event)=>{
+    setPay(event.target.value);
+  }
+  const handleDueChange=(event)=>{
+    setDue(event.target.value);
+  }
+  const handleDescChange=(event)=>{
+    setDesc(event.target.value);
+  }
+
+  const handleSubmit= async (event)=>{
+    event.preventDefault();
+    const partiesName=db.parties.map((party)=>{
+      return(
+        party.name
+      )
+    })
+    if (partiesName.indexOf(name)<0) {
+      return alert(`Please enter the Valid Name. This User Doesnot exist!!!!`);
+    }
+    const recieveDetailsObject={
+      partyName:name,
+      recievedDate:date,
+      recievedAmount:recieve,
+      dueAmount:due,
+      description:desc,
+    };
+    try{
+    await axios.post("http://localhost:5179/recieveDetails",recieveDetailsObject)
+    dispatch(addUserRecieveDetails({partyName:name,recievedDate:date,recievedAmount:recieve,dueAmount:due,description:desc}))
+    setName('');
+    setDate('');
+    setRecieve('');
+    setDue('');
+    setDesc('');
+    return alert(`Payment Recieved Successfully!!`)
+    }
+    catch(err){
+      console.log(err.message);
+    }
+  }
+
 
   return (
-    <Container>
+    <Container onSubmit={handleSubmit} >
       <Title>Recieve</Title>
-      <Input type="text" placeholder="From" required />
-      <Input type='text' onFocus={() => (dateRef.current.type = 'date', dateRef.current.focus())} placeholder='Select Date' ref={dateRef}/>
-      <Input type="number" placeholder="Amount Recieved" required />
-      <Input type="number" placeholder="Amount Due" required />
-      <Input type="text" placeholder="Description" required />
+      <Input onChange={handleNameChange}  value={name} type="text" placeholder="From" required />
+      <Input onChange={handleDateChange}  value={date} type='text' onFocus={() => (dateRef.current.type = 'date', dateRef.current.focus())} placeholder='Select Date' ref={dateRef}/>
+      <Input onChange={handleRecieveChange}value={recieve} type="number" placeholder="Amount Recieved" required />
+      <Input onChange={handleDueChange}   value={due} type="number" placeholder="Amount Due" required />
+      <Input onChange={handleDescChange}  value={desc} type="text" placeholder="Description" required />
       <Button type="submit">Recieve</Button>
     </Container>
   );

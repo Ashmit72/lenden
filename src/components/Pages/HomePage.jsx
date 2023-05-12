@@ -38,8 +38,9 @@ setActiveForm(formName)
      
   
     {activeForm==="FormRecieve"&& <FormRecieve/> }
-    {activeForm==="FormPay"&& <FormPay/> }
+    {activeForm==="FormPay"&&<FormPay/> }
       
     </div>
   )
 }
+

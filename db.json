@@ -1,0 +1,41 @@
+{
+  "parties": [
+    {
+      "name": "Ashmit",
+      "phone": "9813663984",
+      "adress": "Thimi",
+      "id": 0.28175963689203354
+    },
+    {
+      "name": "Dad",
+      "phone": "9851159387",
+      "adress": "Jhapa",
+      "id": 0.34668670680850533
+    },
+    {
+      "name": "Mom",
+      "phone": "9841927580",
+      "adress": "Ilam",
+      "id": 0.7601234240187653
+    },
+    {
+      "name": "Sis",
+      "phone": "9860719904",
+      "adress": "Sarlahi",
+      "id": 0.17452463009801356
+    }
+  ],
+  "payDetails": [
+    {
+      "partyName": "Ashmit",
+      "paiddate": "2023-05-12",
+      "paidAmount": "5000",
+      "dueAmount": "2000",
+      "description": "Some Amount Paid",
+      "id": 1
+    }
+  ],
+  "recieveDetails":[
+    
+  ]
+}

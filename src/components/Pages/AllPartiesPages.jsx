@@ -1,67 +1,149 @@
-import React, { useState } from 'react'
 import MyCard from '../MyCard'
 import styled from 'styled-components'
-import { FcBusinessman } from "react-icons/fc";
+import { FiChevronsDown } from "react-icons/fi";
+import { AiTwotoneDelete } from "react-icons/ai";
 import Button from '../Button';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { addUser, removeUser, setUser } from '../../store/slices/userSlice';
+import axios from 'axios';
+import { useEffect } from 'react';
 
 
 
 
 
-export default function ContactPage() {
+
+export default function AllPartiesPages() {
+
+  // css
+  const mediaMatch = window.matchMedia('(max-width: 768)');
+
+  const partiesContainerStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    boxShadow: "none",
+    flexDirection: mediaMatch ? "column" : "row"
+  }
+
+
+  const partiesListStyle = {
+    boxShadow: "2px 2px 4px #eaeaea",
+    width: "85%"
+  }
+
+
+  const partiesFormStyle = {
+    boxShadow: "2px 2px 4px #eaeaea"
+  }
+  // css
+
 
   const [visible, setVisible] = useState(false);
 
   const handleToggle = () => {
     setVisible(!visible)
   }
+  const toggleOnClick = () => {
+    setVisible(handleToggle())
+  }
+  const [inputName, setInputName] = useState('')
+  const [inputPhone, setInputPhone] = useState('')
+  const [inputAdress, setInputAdress] = useState('')
 
-  
-const mediaMatch = window.matchMedia('(max-width: 768)');
-const partiesContainerStyle = {
-  display: "flex",
-  justifyContent: "space-between",
-  boxShadow: "none",
-  flexDirection: mediaMatch ? "column" : "row"
-}
-const partiesListStyle = {
-boxShadow: "2px 2px 4px #eaeaea",
-width:"85%"
+  const dispatch = useDispatch();
+  const { user } = useSelector(state => state.user);
 
-}
-const partiesFormStyle = {
-  boxShadow: "2px 2px 4px #eaeaea"
-}
+  const userId= Math.random()
 
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+
+    const partyObject = {
+      name: inputName,
+      phone: inputPhone,
+      adress: inputAdress,
+      id:userId
+    };
+    try {
+
+      await axios.post("http://localhost:5179/parties", partyObject)
+      dispatch(addUser({ name: inputName, phone: inputPhone, adress: inputAdress,id:userId}))
+      setInputName('');
+      setInputPhone('');
+      setInputAdress('');
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  const handleInputName = (event) => {
+    setInputName(event.target.value)
+  }
+  const handleInputPhone = (event) => {
+    setInputPhone(event.target.value)
+  }
+  const handleInputAdress = (event) => {
+    setInputAdress(event.target.value)
+  }
+
+  const deleteUser = async (id) => {
+    console.log(id);
+    dispatch(removeUser(id))
+    await axios.delete(`http://localhost:5179/parties/${id}`)
+  }
+
+
+  const getUser = async () => {
+    try {
+      const res = await axios.get("http://localhost:5179/parties");
+      dispatch(setUser(res.data));
+
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+  useEffect(() => {
+    getUser();
+  }, [])
+console.log(user);
   return (
     <div>
       <MyCard />
       <Container2 style={partiesContainerStyle}>
+
+
         <Contentbox1 style={partiesListStyle}>
           <h1>Parties List!!</h1>
+
           <ul>
             <Link to="/party" >
-            <List>Party 1</List>
+              {user.map((users, index) => (
+                <List key={index} >
+                  {users.name}
+                  <span onClick={(event) => {
+                    event.preventDefault()
+                    deleteUser(users.id);
+                  }
+                  } ><AiTwotoneDelete className="delete-btn" /></span>
+                </List>
+
+              ))}
             </Link>
-            
-            <Link to="/party" >
-            <List>Party 2</List>
-            </Link>
-            
-            <Link to="/party" >
-            <List>Party 3</List>
-            </Link>
-            
           </ul>
         </Contentbox1>
+
+
         <Contentbox2 style={partiesFormStyle}>
-          <p onClick={handleToggle} ><FcBusinessman />Add New Party</p>
+          <p onClick={handleToggle} ><FiChevronsDown/>Add New Party</p>
           <Content visible={visible} >
-            <Input placeholder='Name' type="text" />
-            <Input placeholder='Phone Number' type="number" />
-            <Input placeholder='Adress' type="text" />
-            <Button>Add Party</Button>
+            <form onSubmit={handleSubmit}>
+              <Input value={inputName} onChange={handleInputName} placeholder='Name' type="text" />
+              <Input value={inputPhone} onChange={handleInputPhone} placeholder='Phone Number' type="number" />
+              <Input value={inputAdress} onChange={handleInputAdress} placeholder='Adress' type="text" />
+              <Button onClick={toggleOnClick} >Add Party</Button>
+            </form>
           </Content>
         </Contentbox2>
       </Container2>
@@ -73,9 +155,10 @@ const partiesFormStyle = {
 
 
 
+
 const Container2 = styled.div`
 display: flex;
-  flex-direction: row;
+  flexDirection: mediaMatch ? "column" : "row"
   flex-wrap:wrap;
   align-items: center;
   justify-content:space between
@@ -112,13 +195,13 @@ const Input = styled.input`
     margin-bottom: 10px;
   }
 `;
-const Contentbox2=styled.div`
+const Contentbox2 = styled.div`
 width:85%;
 @media (max-width:768px){
   width:100%
 }
 `;
-const Contentbox1=styled.div`
+const Contentbox1 = styled.div`
 width:85%;
 `;
 const Content = styled.div`
@@ -129,7 +212,12 @@ const Content = styled.div`
   }
 `;
 
-const List=styled.li`
-border-bottom:0.25px solid gray;
-
+const List = styled.li`
+// border-bottom:0.25px solid gray;
+list-style-type:none;
+border-bottom:0.5px solid gray;
+width:max-content;
+padding-left:1rem;
+padding-top:1rem;
 `;
+
