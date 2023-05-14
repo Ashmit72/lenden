@@ -41,6 +41,12 @@ export default function AllPartiesPages() {
   // css
 
 
+  if (db.parties.length===0) {
+    db.payDetails.length=0;
+    db.recieveDetails.length=0;    
+
+  }
+
   const [visible, setVisible] = useState(false);
 
   const handleToggle = () => {

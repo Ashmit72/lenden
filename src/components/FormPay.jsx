@@ -45,6 +45,7 @@ function FormPay() {
     if (partiesName.indexOf(name) < 0) {
 
       return alert(`Please enter the Valid Name. This User Doesnot exist!!!!`);
+
     }
 
     const paidTransactions = db.payDetails.find(item => item.partyName === name)
