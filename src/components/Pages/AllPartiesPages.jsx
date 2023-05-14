@@ -100,9 +100,16 @@ export default function AllPartiesPages() {
   }
 
   const deleteUser = async (id) => {
-    console.log(id);
-    dispatch(removeUser(id))
-    await axios.delete(`http://192.168.254.156:5179/parties/${id}`)
+    const proceed=window.confirm('Are you sure you want to delete the party?');
+    if (proceed) {
+      console.log(id);
+      dispatch(removeUser(id))
+      await axios.delete(`http://192.168.254.156:5179/parties/${id}`)  
+    }
+    else{
+      console.log("Operation Terminated");
+    }
+    
   }
 
 
@@ -131,7 +138,7 @@ console.log(user);
                 <List key={index} >
                   {users.name}
                   <span onClick={(event) => {
-                    event.preventDefault()
+                    event.preventDefault();
                     deleteUser(users.id);
                   }
                   } ><AiTwotoneDelete className="delete-btn" /></span>
