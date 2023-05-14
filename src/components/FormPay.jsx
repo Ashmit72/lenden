@@ -1,4 +1,4 @@
-import React, { useRef,useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import db from "../../db.json";
 import { addUserPayDetails } from '../store/slices/userSlice';
@@ -8,56 +8,74 @@ import axios from 'axios';
 
 
 function FormPay() {
-  const [name,setName]=useState('');
-  const [date,setDate]=useState('');
-  const [pay,setPay]=useState('');
-  const [due,setDue]=useState('');
-  const [desc,setDesc]=useState('');
+  const [name, setName] = useState('');
+  const [date, setDate] = useState('');
+  const [pay, setPay] = useState('');
+  const [due, setDue] = useState('');
+  const [desc, setDesc] = useState('');
   const dateRef = useRef();
-  const dispatch=useDispatch();
-  
-  
-  const handleNameChange=(event)=>{
+  const dispatch = useDispatch();
+
+
+  const handleNameChange = (event) => {
     setName(event.target.value);
   }
-  const handleDateChange=(event)=>{
+  const handleDateChange = (event) => {
     setDate(event.target.value);
   }
-  const handlePayChange=(event)=>{
+  const handlePayChange = (event) => {
     setPay(event.target.value);
   }
-  const handleDueChange=(event)=>{
+  const handleDueChange = (event) => {
     setDue(event.target.value);
   }
-  const handleDescChange=(event)=>{
+  const handleDescChange = (event) => {
     setDesc(event.target.value);
   }
-  
-  const handleSubmit= async (event)=>{
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-  
-    const partiesName=db.parties.map((party)=>{
-      return(
+
+    const partiesName = db.parties.map((party) => {
+      return (
         party.name
       )
     })
-  
-    if (partiesName.indexOf(name) <0) {
+
+    if (partiesName.indexOf(name) < 0) {
 
       return alert(`Please enter the Valid Name. This User Doesnot exist!!!!`);
     }
-    
-    const payDetailsObject={
-      partyName:name,
-      paidDate:date,
-      paidAmount:pay,
-      dueAmount:due,
-      description:desc,
+
+    const paidTransactions = db.payDetails.find(item => item.partyName === name)
+
+    const payDetailsObject = {
+      partyName: name,
+      paidDate: date,
+      description: desc,
     };
 
-    try{
-      await axios.post("http://192.168.254.156:5179/payDetails",payDetailsObject) 
-      dispatch(addUserPayDetails({partyName:name,paidDate:date,paidAmount:pay,dueAmount:due,description:desc}))
+    if (paidTransactions) {
+      const payload = {
+        ...payDetailsObject,
+        ...paidTransactions,
+        paidAmount: paidTransactions.paidAmount + pay,
+        dueAmount: paidTransactions.dueAmount - pay
+      }
+      await axios.put("http://192.168.254.156:5179/payDetails/" + paidTransactions.id, payload)
+
+    } else {
+      await axios.post("http://192.168.254.156:5179/payDetails", {
+        ...payDetailsObject,
+        paidAmount: pay,
+        dueAmount: due
+      })
+
+    }
+
+
+    try {
+      dispatch(addUserPayDetails({ partyName: name, paidDate: date, paidAmount: pay, dueAmount: due, description: desc }))
       setName('');
       setDate('');
       setPay('');
@@ -65,7 +83,7 @@ function FormPay() {
       setDesc('');
       return alert(`Payed Successfully!!}`);
     }
-    catch(err){
+    catch (err) {
       console.log(err.message);
     }
 
@@ -76,9 +94,9 @@ function FormPay() {
     <Container onSubmit={handleSubmit}>
       <Title>Pay</Title>
       <Input onChange={handleNameChange} value={name} type="text" placeholder="To" required />
-      <Input onChange={handleDateChange} value={date} type='text' onFocus={() => (dateRef.current.type = 'date', dateRef.current.focus())} placeholder='Select Date' ref={dateRef}/>
-      <Input onChange={handlePayChange}  value={pay} type="number" placeholder="Amount Paid" required />
-      <Input onChange={handleDueChange}  value={due} type="number" placeholder="Amount Due" required />
+      <Input onChange={handleDateChange} value={date} type='text' onFocus={() => (dateRef.current.type = 'date', dateRef.current.focus())} placeholder='Select Date' ref={dateRef} />
+      <Input onChange={handlePayChange} value={pay} type="number" placeholder="Amount Paid" required />
+      <Input onChange={handleDueChange} value={due} type="number" placeholder="Amount Due" required />
       <Input onChange={handleDescChange} value={desc} type="text" placeholder="Description" required />
       <Button onClick={handleSubmit} type="submit">Pay</Button>
     </Container>

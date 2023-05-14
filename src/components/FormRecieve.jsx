@@ -42,15 +42,35 @@ function FormRecieve() {
     if (partiesName.indexOf(name)<0) {
       return alert(`Please enter the Valid Name. This User Doesnot exist!!!!`);
     }
+
+const recievedTransactions=db.recieveDetails.find(item=>item.partyName===name);
+
     const recieveDetailsObject={
       partyName:name,
       recievedDate:date,
-      recievedAmount:recieve,
-      dueAmount:due,
+      // recievedAmount:recieve,
+      // dueAmount:due,
       description:desc,
     };
+
+    if (recievedTransactions) {
+      const payload={
+        ...recieveDetailsObject,
+        ...recievedTransactions,
+        recievedAmount:recievedTransactions.recievedAmount+recieve,
+        dueAmount:recievedTransactions.dueAmount-recieve
+      }
+      await axios.put("http://192.168.254.156:5179/recieveDetails/"+recievedTransactions.id,payload)
+    } else{
+      await axios.post("http://192.168.254.156:5179/recieveDetails",{
+       ...recieveDetailsObject,
+       recievedAmount:recieve,
+       dueAmount:due 
+      })   
+
+    }
+
     try{
-    await axios.post("http://192.168.254.156:5179/recieveDetails",recieveDetailsObject)
     dispatch(addUserRecieveDetails({partyName:name,recievedDate:date,recievedAmount:recieve,dueAmount:due,description:desc}))
     setName('');
     setDate('');

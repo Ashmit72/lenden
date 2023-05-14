@@ -15,63 +15,70 @@ import { FcInspection } from "react-icons/fc";
 
 export default function TransactionDetailsPage() {
 
-// const [date,setDate]=useState('');
-// const [amountToPay,setAmountToPay]=useState('');
-// const [amountToRecieve,setAmountToRecieve]=useState('');
-// const [amountDueToPay,setAmountDueToPay]=useState('');
-// const [amountDueToRecieve,setAmountDueToRecieve]=useState('');
-// const [desc,setDesc]=useState('');
+  // const [date,setDate]=useState('');
+  // const [amountToPay,setAmountToPay]=useState('');
+  // const [amountToRecieve,setAmountToRecieve]=useState('');
+  // const [amountDueToPay,setAmountDueToPay]=useState('');
+  // const [amountDueToRecieve,setAmountDueToRecieve]=useState('');
+  // const [desc,setDesc]=useState('');
 
 
 
 
-const [party,setParty]=useState({})
-const location=useLocation()
-const id=location.search.split("=")[location.search.split("=").length=1]
-  const userData=db.parties.map((party,id)=>{
+  const [party, setParty] = useState({})
+  const [transactions, setTransactions] = useState([])
+  const location = useLocation()
+  const id = location.search.split("=")[location.search.split("=").length = 1]
+  const userData = db.parties.map((party, id) => {
     return party
   })
-useEffect(()=>{
-  console.log(userData.filter(el => el.id == id));
-setParty(userData.filter((user)=> +user.id===+id)[0])
-},[])
-console.log(party);
+
+  useEffect(() => {
+    const user = userData.find(el => el.id == id)
+    if (!user) {
+      return alert("Invalid user")
+    }
+
+    const paidTransactions = db.payDetails.filter(item => item.partyName === user.name).map(item => ({...item, type: "PAID"}))
+    const receivedTransactions = db.recieveDetails.filter(item => item.partyName === user.name).map(item => ({...item, type : "RECEIVED"}))
+
+    setParty(user)
+    setTransactions([...paidTransactions, ...receivedTransactions])
+
+  }, [id])
+  console.log(transactions);
   return (
     <div>
-      <h1>Transaction Details of { party && party.name }</h1>
-   <TableWrapper>
-      <Table>
-        <thead>
-          <tr>
-            <th><FcCalendar/>Date</th>
-            <th><FcRightUp/>Amount to pay</th>
-            <th><FcLeftDown/>Amount To recieve</th>
-            <th><FcExpired/>Amount Due To Pay</th>
-            <th><FcLeftDown2/>Amount Due To Recieve</th>
-            <th><FcInspection/>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Row 1, Column 1</td>
-            <td>Row 1, Column 2</td>
-            <td>Row 1, Column 3</td>
-            <td>Row 1, Column 4</td>
-            <td>Row 1, Column 5</td>
-            <td>Row 1, Column 6</td>
-          </tr>
-          <tr>
-            <td>Row 2, Column 1</td>
-            <td>Row 2, Column 2</td>
-            <td>Row 2, Column 3</td>
-            <td>Row 2, Column 4</td>
-            <td>Row 2, Column 5</td>
-            <td>Row 2, Column 6</td>
-          </tr>
-        </tbody>
-      </Table>
-    </TableWrapper>
-    
+      <h1>Transaction Details of {party && party.name}</h1>
+      <TableWrapper>
+        <Table>
+          <thead>
+            <tr>
+              <th><FcCalendar />Date</th>
+              <th><FcRightUp />Amount Paid</th>
+              <th><FcLeftDown />Amount  Recieved</th>
+              <th><FcExpired />Amount Due To Pay</th>
+              <th><FcLeftDown2 />Amount Due To Recieve</th>
+              <th><FcInspection />Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              transactions.map(transaction => (
+              <tr>
+                <td>{transaction.type === 'PAID' ? transaction.paidDate : transaction.recievedDate}</td>
+                <td>{transaction.type === 'PAID' ? transaction.paidAmount : '-'}</td>
+                <td>{transaction.type === 'RECEIVED' ? transaction.receivedAmount : '-'}</td>
+                <td>{transaction.type === 'PAID' ? transaction.dueAmount : '-'}</td>
+                <td>{transaction.type === 'RECEIVED' ? transaction.dueAmount : '-'}</td>
+                <td>{transaction.description}</td>
+              </tr>
+              ))
+            }
+          </tbody>
+        </Table>
+      </TableWrapper>
+
     </div>
 
   )
