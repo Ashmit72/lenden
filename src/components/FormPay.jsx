@@ -63,10 +63,10 @@ function FormPay() {
         paidAmount: paidTransactions.paidAmount + pay,
         dueAmount: paidTransactions.dueAmount - pay
       }
-      await axios.put("http://192.168.254.156:5179/payDetails/" + paidTransactions.id, payload)
+      await axios.put("http://192.168.1.16:5179/payDetails/" + paidTransactions.id, payload)
 
     } else {
-      await axios.post("http://192.168.254.156:5179/payDetails", {
+      await axios.post("http://192.168.1.16:5179/payDetails", {
         ...payDetailsObject,
         paidAmount: pay,
         dueAmount: due
@@ -155,6 +155,7 @@ const Input = styled.input`
     margin-bottom: 10px;
   }
 `;
+
 
 
 const Textarea = styled.textarea`

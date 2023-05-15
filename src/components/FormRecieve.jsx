@@ -60,9 +60,9 @@ const recievedTransactions=db.recieveDetails.find(item=>item.partyName===name);
         recievedAmount:recievedTransactions.recievedAmount+recieve,
         dueAmount:recievedTransactions.dueAmount-recieve
       }
-      await axios.put("http://192.168.254.156:5179/recieveDetails/"+recievedTransactions.id,payload)
+      await axios.put("http://192.168.1.16:5179/recieveDetails/"+recievedTransactions.id,payload)
     } else{
-      await axios.post("http://192.168.254.156:5179/recieveDetails",{
+      await axios.post("http://192.168.1.16:5179/recieveDetails",{
        ...recieveDetailsObject,
        recievedAmount:recieve,
        dueAmount:due 

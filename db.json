@@ -1,5 +1,23 @@
 {
   "parties": [],
-  "payDetails": [],
-  "recieveDetails": []
+  "payDetails": [
+    {
+      "partyName": "B",
+      "paidDate": "2023-05-14",
+      "description": "3",
+      "paidAmount": "3",
+      "dueAmount": "3",
+      "id": 1
+    }
+  ],
+  "recieveDetails": [
+    {
+      "partyName": "A",
+      "recievedDate": "2023-05-15",
+      "description": "3",
+      "recievedAmount": "3",
+      "dueAmount": "3",
+      "id": 1
+    }
+  ]
 }
