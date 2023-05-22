@@ -28,6 +28,7 @@ export default function AllPartiesPages() {
     flexDirection: mediaMatch ? "column" : "row"
   }
 
+   
 
   const partiesListStyle = {
     boxShadow: "2px 2px 4px #eaeaea",
@@ -41,22 +42,23 @@ export default function AllPartiesPages() {
   // css
 
 
-  // const removeAllDetails=async(id)=>{
-  //   try{
-  //     await axios.delete(`http://192.168.1.16:5179/payDetails/${id}`)     
-  //     await axios.delete(`http://192.168.1.16:5179/recieveDetails/${id}`)
-  //     } catch(err){
-  //       console.log(err.message);
-  //     }
-  // }
-
-  if (db.parties.length===0) {
-    db.payDetails.length=0;
-    db.recieveDetails.length=0; 
-    // removeAllDetails();
-
-    
+  const removeAllDetails=async(id)=>{
+    try{
+      await axios.delete(`http://192.168.1.22:5179/payDetails/${id}`)     
+      await axios.delete(`http://192.168.1.22:5179/recieveDetails/${id}`)
+      } catch(err){
+        console.log(err.message);
+      }
   }
+
+  if (db.parties.length === 0) {
+    db.parties = [];
+    db.payDetails = [];
+    db.recieveDetails = [];
+    removeAllDetails();
+    localStorage.setItem('db', JSON.stringify(db));
+  }
+  
 
   const [visible, setVisible] = useState(false);
 
@@ -96,7 +98,7 @@ export default function AllPartiesPages() {
     };
     try {
 
-      await axios.post("http://192.168.1.16:5179/parties", partyObject)
+      await axios.post("http://192.168.1.22:5179/parties", partyObject)
       dispatch(addUser({ name: inputName, phone: inputPhone, adress: inputAdress,id:userId}))
       setInputName('');
       setInputPhone('');
@@ -121,18 +123,19 @@ export default function AllPartiesPages() {
     if (proceed) {
       console.log(id);
       dispatch(removeUser(id))
-      await axios.delete(`http://192.168.1.16:5179/parties/${id}`)  
+      await axios.delete(`http://192.168.1.22:5179/parties/${id}`)  
+      await removeAllDetails();
     }
     else{
+    }
       console.log("Operation Terminated");
     }
     
-  }
 
 
   const getUser = async () => {
     try {
-      const res = await axios.get("http://192.168.1.16:5179/parties");
+      const res = await axios.get("http://192.168.1.22:5179/parties");
       dispatch(setUser(res.data));
 
     } catch (error) {
@@ -142,7 +145,6 @@ export default function AllPartiesPages() {
   useEffect(() => {
     getUser();
   }, [])
-console.log(user);
   return (
     <div>
       <MyCard />
@@ -157,6 +159,7 @@ console.log(user);
                   <span onClick={(event) => {
                     event.preventDefault();
                     deleteUser(users.id);
+                
                   }
                   } ><AiTwotoneDelete className="delete-btn" /></span>
                 </List>
@@ -230,7 +233,8 @@ const Input = styled.input`
 const Contentbox2 = styled.div`
 width:85%;
 @media (max-width:768px){
-  width:100%
+  width:100%;
+  
 }
 `;
 const Contentbox1 = styled.div`

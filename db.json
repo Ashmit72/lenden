@@ -1,23 +1,18 @@
 {
-  "parties": [],
-  "payDetails": [
+  "parties": [
     {
-      "partyName": "B",
-      "paidDate": "2023-05-14",
-      "description": "3",
-      "paidAmount": "3",
-      "dueAmount": "3",
-      "id": 1
+      "name": "Party-1",
+      "phone": "1",
+      "adress": "a",
+      "id": 0.9732733928134268
+    },
+    {
+      "name": "Party-2",
+      "phone": "2",
+      "adress": "b",
+      "id": 0.789992057481195
     }
   ],
-  "recieveDetails": [
-    {
-      "partyName": "A",
-      "recievedDate": "2023-05-15",
-      "description": "3",
-      "recievedAmount": "3",
-      "dueAmount": "3",
-      "id": 1
-    }
-  ]
+  "payDetails": [],
+  "recieveDetails": []
 }

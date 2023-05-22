@@ -1,52 +1,33 @@
-import React from 'react'
-import userSlice from '../../store/slices/userSlice';
-import db from "../../../db.json";
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useState } from 'react';
-import { useEffect } from 'react';
 import styled from 'styled-components';
-import { FcCalendar } from "react-icons/fc";
-import { FcLeftDown } from "react-icons/fc";
-import { FcRightUp } from "react-icons/fc";
-import { FcExpired } from "react-icons/fc";
-import { FcLeftDown2 } from "react-icons/fc";
-import { FcInspection } from "react-icons/fc";
-
+import { FcCalendar, FcLeftDown, FcRightUp, FcExpired, FcLeftDown2, FcInspection } from "react-icons/fc";
+import db from "../../../db.json";
 
 export default function TransactionDetailsPage() {
-
-  // const [date,setDate]=useState('');
-  // const [amountToPay,setAmountToPay]=useState('');
-  // const [amountToRecieve,setAmountToRecieve]=useState('');
-  // const [amountDueToPay,setAmountDueToPay]=useState('');
-  // const [amountDueToRecieve,setAmountDueToRecieve]=useState('');
-  // const [desc,setDesc]=useState('');
-
-
-
-
-  const [party, setParty] = useState({})
-  const [transactions, setTransactions] = useState([])
-  const location = useLocation()
-  const id = location.search.split("=")[location.search.split("=").length = 1]
-  const userData = db.parties.map((party, id) => {
-    return party
-  })
+  const [party, setParty] = useState({});
+  const [transactions, setTransactions] = useState([]);
+  const location = useLocation();
+  const id = location.search.split("=")[1];
 
   useEffect(() => {
-    const user = userData.find(el => el.id == id)
+    const user = db.parties.find(party => party.id == id);
     if (!user) {
-      return alert("Invalid user")
+      return alert("Invalid user");
     }
 
-    const paidTransactions = db.payDetails.filter(item => item.partyName === user.name).map(item => ({...item, type: "PAID"}))
-    const receivedTransactions = db.recieveDetails.filter(item => item.partyName === user.name).map(item => ({...item, type : "RECEIVED"}))
+    const paidTransactions = db.payDetails
+      .filter(item => item.partyName === user.name)
+      .flatMap(item => item.transactions.map(transaction => ({ ...transaction, type: "PAID" })));
 
-    setParty(user)
-    setTransactions([...paidTransactions, ...receivedTransactions])
+    const receivedTransactions = db.recieveDetails
+      .filter(item => item.partyname === user.name)
+      .flatMap(item => item.transactions.map(transaction => ({ ...transaction, type: "RECEIVED" })));
 
-  }, [id])
-  console.log(transactions);
+    setParty(user);
+    setTransactions([...paidTransactions, ...receivedTransactions]);
+  }, [id]);
+
   return (
     <div>
       <h1>Transaction Details of {party && party.name}</h1>
@@ -55,34 +36,31 @@ export default function TransactionDetailsPage() {
           <thead>
             <tr>
               <th><FcCalendar />Date</th>
+              <th><FcLeftDown />Amount Received</th>
               <th><FcRightUp />Amount Paid</th>
-              <th><FcLeftDown />Amount  Recieved</th>
+              <th><FcLeftDown2 />Amount Due To Receive</th>
               <th><FcExpired />Amount Due To Pay</th>
-              <th><FcLeftDown2 />Amount Due To Recieve</th>
               <th><FcInspection />Description</th>
             </tr>
           </thead>
           <tbody>
-            {
-              transactions.map(transaction => (
-              <tr>
-                <td>{transaction.type === 'PAID' ? transaction.paidDate : transaction.recievedDate}</td>
-                <td>{transaction.type === 'PAID' ? transaction.paidAmount : '-'}</td>
-                <td>{transaction.type === 'RECEIVED' ? transaction.receivedAmount : '-'}</td>
-                <td>{transaction.type === 'PAID' ? transaction.dueAmount : '-'}</td>
-                <td>{transaction.type === 'RECEIVED' ? transaction.dueAmount : '-'}</td>
-                <td>{transaction.description}</td>
+            {transactions.map((transaction, index) => (
+              <tr key={index}>
+                <td>{transaction.type === 'PAID' ? transaction.payDate : transaction.recieveDate}</td>
+                <td>{transaction.type === 'PAID' ? transaction.payAmount : '-'}</td>
+                <td>{transaction.type === 'RECEIVED' ? transaction.recieveAmount : '-'}</td>
+                <td>{transaction.type === 'PAID' ? transaction.toPayDue : '-'}</td>
+                <td>{transaction.type === 'RECEIVED' ? transaction.toRecieveDue : '-'}</td>
+                <td>{transaction.remarks}</td>
               </tr>
-              ))
-            }
+            ))}
           </tbody>
         </Table>
       </TableWrapper>
-
     </div>
-
-  )
+  );
 }
+
 const TableWrapper = styled.div`
   width: 100%;
   overflow-x: auto;

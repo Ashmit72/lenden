@@ -1,4 +1,4 @@
-import React, { useRef,useState } from 'react';
+import React, { useRef,useState,useEffect } from 'react';
 import styled from 'styled-components';
 import db from "../../db.json";
 import { addUserRecieveDetails } from '../store/slices/userSlice';
@@ -9,16 +9,52 @@ import axios from 'axios';
 function FormRecieve() {
   
   const [name,setName]=useState('');
+  const [suggestedNames, setSuggestedNames] = useState([]);
   const [date,setDate]=useState('');
   const [recieve,setRecieve]=useState('');
   const [due,setDue]=useState('');
   const [desc,setDesc]=useState('')
   const dateRef = useRef();
+  const suggestionsRef=useRef();
   const dispatch=useDispatch()
 
+  
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (suggestionsRef.current && !suggestionsRef.current.contains(event.target)) {
+        setSuggestedNames([]);
+      }
+    };
+  
+    const handleGlobalClick = () => {
+      setSuggestedNames([]);
+    };
+  
+    document.addEventListener('click', handleClickOutside);
+    document.addEventListener('click', handleGlobalClick);
+  
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('click', handleGlobalClick);
+    };
+  }, []);
+ 
+
+
+
   const handleNameChange=(event)=>{
-    setName(event.target.value);
+    const query=event.target.value;
+    setName(query);
+    const suggestions=db.parties.filter(party=>party.name.toLowerCase().includes(query.toLowerCase()));
+    setSuggestedNames(suggestions);
   }
+
+  const handleSuggestionClick=(name)=>{
+    setName(name);
+    setSuggestedNames([]);
+  }
+
   const handleDateChange=(event)=>{
     setDate(event.target.value);
   }
@@ -34,44 +70,34 @@ function FormRecieve() {
 
   const handleSubmit= async (event)=>{
     event.preventDefault();
-    const partiesName=db.parties.map((party)=>{
-      return(
-        party.name
-      )
-    })
-    if (partiesName.indexOf(name)<0) {
+    const currentParty = db.parties.find(party =>party.name === name);
+    
+    if (!currentParty) {
       return alert(`Please enter the Valid Name. This User Doesnot exist!!!!`);
     }
 
-const recievedTransactions=db.recieveDetails.find(item=>item.partyName===name);
-
-    const recieveDetailsObject={
-      partyName:name,
-      recievedDate:date,
-      // recievedAmount:recieve,
-      // dueAmount:due,
-      description:desc,
-    };
-
+    const recievedTransactions=db.recieveDetails.find(item=> item.partyid === currentParty.id);
+    
+    const payload={
+        recieveDate: date,
+        recieveAmount: recieve,
+        toRecieveDue: due,
+        remarks: desc
+    }
     if (recievedTransactions) {
-      const payload={
-        ...recieveDetailsObject,
-        ...recievedTransactions,
-        recievedAmount:recievedTransactions.recievedAmount+recieve,
-        dueAmount:recievedTransactions.dueAmount-recieve
-      }
-      await axios.put("http://192.168.1.16:5179/recieveDetails/"+recievedTransactions.id,payload)
+      recievedTransactions.transactions.push(payload);
+      await axios.put(`http://192.168.1.22:5179/recieveDetails/${recievedTransactions.id}`, recievedTransactions)
     } else{
-      await axios.post("http://192.168.1.16:5179/recieveDetails",{
-       ...recieveDetailsObject,
-       recievedAmount:recieve,
-       dueAmount:due 
-      })   
-
+      const data = {
+        partyid: currentParty.id,
+        partyname: currentParty.name,
+        transactions: [payload]
+      }
+      await axios.post("http://192.168.1.22:5179/recieveDetails",data)   
     }
 
     try{
-    dispatch(addUserRecieveDetails({partyName:name,recievedDate:date,recievedAmount:recieve,dueAmount:due,description:desc}))
+    dispatch(addUserRecieveDetails(db.recieveDetails.find(item => {return item.partyid === currentParty.id})))
     setName('');
     setDate('');
     setRecieve('');
@@ -89,6 +115,18 @@ const recievedTransactions=db.recieveDetails.find(item=>item.partyName===name);
     <Container onSubmit={handleSubmit} >
       <Title>Recieve</Title>
       <Input onChange={handleNameChange}  value={name} type="text" placeholder="From" required />
+      {suggestedNames.length > 0 && (
+        <Suggestions ref={suggestionsRef}>
+          {suggestedNames.map((suggestion) => (
+            <SuggestionItem
+              key={suggestion.id}
+              onClick={() => handleSuggestionClick(suggestion.name)}
+            >
+              {suggestion.name}
+            </SuggestionItem>
+          ))}
+        </Suggestions>
+      )}
       <Input onChange={handleDateChange}  value={date} type='text' onFocus={() => (dateRef.current.type = 'date', dateRef.current.focus())} placeholder='Select Date' ref={dateRef}/>
       <Input onChange={handleRecieveChange}value={recieve} type="number" placeholder="Amount Recieved" required />
       <Input onChange={handleDueChange}   value={due} type="number" placeholder="Amount Due" required />
@@ -148,27 +186,27 @@ const Input = styled.input`
   }
 `;
 
-const Textarea = styled.textarea`
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 18px;
-  resize: vertical;
+// const Textarea = styled.textarea`
+//   width: 100%;
+//   padding: 10px;
+//   margin-bottom: 20px;
+//   border: 1px solid #ccc;
+//   border-radius: 5px;
+//   font-size: 18px;
+//   resize: vertical;
 
-  &:focus {
-    outline: none;
-    border-color: #1E90FF;
-    box-shadow: 0px 0px 4px rgba(30, 144, 255, 0.5);
-  }
+//   &:focus {
+//     outline: none;
+//     border-color: #1E90FF;
+//     box-shadow: 0px 0px 4px rgba(30, 144, 255, 0.5);
+//   }
 
-  @media (max-width: 768px) {
-    font-size: 16px;
-    padding: 8px;
-    margin-bottom: 10px;
-  }
-`;
+//   @media (max-width: 768px) {
+//     font-size: 16px;
+//     padding: 8px;
+//     margin-bottom: 10px;
+//   }
+// `;
 
 const Button = styled.button`
   width: 100%;
@@ -191,3 +229,35 @@ const Button = styled.button`
     padding: 8px 16px;
   }
 `;
+const Suggestions = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 82%;
+  position: absolute;
+  background-color: #fff;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  border-radius: 4px;
+  overflow: hidden;
+  top: 28rem; 
+  left: 50%; 
+  transform: translateX(-50%); 
+
+  @media (max-width: 768px) {
+    width: 94.5%;
+    left: 50%;
+    top:24.4rem;
+  }
+`;
+
+const SuggestionItem = styled.li`
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;
+

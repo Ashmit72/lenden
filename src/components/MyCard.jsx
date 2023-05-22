@@ -2,20 +2,46 @@ import styled from 'styled-components';
 import {FcLeftDown} from "react-icons/fc";
 import {FcRightUp} from "react-icons/fc";
 import db from "../../db.json";
+import { useState } from 'react';
 
 
 
 
 function MyCard() {
 
-  const totalPaidAmount=db.payDetails.reduce(
-    (acc,curr)=>acc+parseInt(curr.paidAmount)
-    ,0
-  );
-  const totalRecieveAmount=db.recieveDetails.reduce(
-    (acc,curr)=>acc+parseInt(curr.recievedAmount)
-    ,0
-  );
+
+//  const [pay,setPay]=useState(0)
+//  const [recieve,setRecieve]=useState(0)
+
+ const payDetails=db.payDetails;
+ const recieveDetails=db.recieveDetails;
+
+//  const partyPayDetails= payDetails.flatMap(party=>{
+//   const transactions=party.transactions;
+//   return transactions.map(transaction=>transaction.amount)
+//  })
+ 
+
+//  const partyRecieveDetails=recieveDetails.flatMap(party=>{
+//   const transactions=party.transactions;
+//   return transactions.map(transaction=>transaction.amount)
+//  })
+ 
+
+ const totalPartyRecieveAmount = recieveDetails.reduce((acc, party) => {
+  const transactions = party.transactions;
+  const partyRecieveAmount = transactions.reduce((sum, transaction) => sum + parseInt(transaction.recieveAmount), 0);
+  return acc + partyRecieveAmount;
+}, 0);
+
+const totalPartyPayAmount = payDetails.reduce((acc, party) => {
+  const transactions = party.transactions;
+  const partyPayAmount = transactions.reduce((sum, transaction) => sum + parseInt(transaction.payAmount), 0);
+  return acc + partyPayAmount;
+}, 0);
+
+
+
   
 
   return (
@@ -23,13 +49,13 @@ function MyCard() {
     <Card>
       <div><FcLeftDown style={{fontSize:"2rem"}} /></div>
     <Title>Recieved</Title>
-    <div>Rs.{totalRecieveAmount}</div>
+    <div>Rs.{totalPartyRecieveAmount}</div>
     </Card>
     
     <Card>    
 <div><FcRightUp style={{fontSize:"2rem"}} /></div>
 <Title>Paid</Title>
-<div>Rs.{totalPaidAmount}</div>
+<div>Rs.{totalPartyPayAmount}</div>
     </Card>
     
     
@@ -48,6 +74,14 @@ const Card = styled.div`
   margin: 20px 0;
   flex:1;
   gap:1rem;
+  transition: 1s ease;
+  
+  &:hover{
+-webkit-transform: scale(0.8);
+-ms-transform: scale(0.8);
+transform: scale(0.8);
+transition: 1s ease;
+  }
   
   @media (max-width: 768px) {
     max-width: 100%;
