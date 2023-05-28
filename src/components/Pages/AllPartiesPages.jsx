@@ -174,9 +174,9 @@ export default function AllPartiesPages() {
           <h3 onClick={handleToggle} ><FiChevronsDown/>Add New Party</h3>
           <Content visible={visible} >
             <form onSubmit={handleSubmit}>
-              <Input value={inputName} onChange={handleInputName} placeholder='Name' type="text" />
-              <Input value={inputPhone} onChange={handleInputPhone} placeholder='Phone Number' type="number" />
-              <Input value={inputAdress} onChange={handleInputAdress} placeholder='Adress' type="text" />
+              <Input required value={inputName} onChange={handleInputName} placeholder='Name' type="text" />
+              <Input required value={inputPhone} onChange={handleInputPhone} placeholder='Phone Number' type="number" />
+              <Input required value={inputAdress} onChange={handleInputAdress} placeholder='Adress' type="text" />
               <Button onClick={toggleOnClick} >Add Party</Button>
             </form>
           </Content>

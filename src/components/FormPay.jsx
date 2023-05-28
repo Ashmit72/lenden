@@ -12,7 +12,7 @@ function FormPay() {
 
   // const [suggestedNames,setSuggestedNames]=useState([])
   const [name, setName] = useState('');
-const [suggestedNames, setSuggestedNames] = useState([]);
+  const [suggestedNames, setSuggestedNames] = useState([]);
   const [date, setDate] = useState('');
   const [pay, setPay] = useState('');
   const [due, setDue] = useState('');
@@ -20,6 +20,20 @@ const [suggestedNames, setSuggestedNames] = useState([]);
   const dateRef = useRef();
   const suggestionsRef = useRef();
   const dispatch = useDispatch();
+
+  const ObjectInfo=db.payDetails.map((item)=>{
+    return item.transactions.map((due)=>{
+      return due.toPayDue
+    })
+  })
+
+  
+  let TotalPayInfo = 0;
+  ObjectInfo.forEach(element => {
+    element.forEach(el => {
+      TotalPayInfo += parseInt(el);
+    })
+  });
   
 
   

@@ -13,10 +13,10 @@ function FormRecieve() {
   const [date,setDate]=useState('');
   const [recieve,setRecieve]=useState('');
   const [due,setDue]=useState('');
-  const [desc,setDesc]=useState('')
+  const [desc,setDesc]=useState('');
   const dateRef = useRef();
   const suggestionsRef=useRef();
-  const dispatch=useDispatch()
+  const dispatch=useDispatch();
 
   
 

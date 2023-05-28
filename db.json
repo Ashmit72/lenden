@@ -2,17 +2,45 @@
   "parties": [
     {
       "name": "Party-1",
-      "phone": "1",
-      "adress": "a",
-      "id": 0.9732733928134268
+      "phone": "9813663984",
+      "adress": "Adress1",
+      "id": 0.3473767752403252
     },
     {
       "name": "Party-2",
-      "phone": "2",
-      "adress": "b",
-      "id": 0.789992057481195
+      "phone": "9813663984",
+      "adress": "Adress-2",
+      "id": 0.6142421555160601
     }
   ],
-  "payDetails": [],
-  "recieveDetails": []
+  "payDetails": [
+    {
+      "partyid": 0.6142421555160601,
+      "partyName": "Party-2",
+      "transactions": [
+        {
+          "payDate": "2023-05-22",
+          "payAmount": "7500",
+          "toPayDue": "700",
+          "remarks": "Paid By Party-1"
+        }
+      ],
+      "id": 1
+    }
+  ],
+  "recieveDetails": [
+    {
+      "partyid": 0.3473767752403252,
+      "partyname": "Party-1",
+      "transactions": [
+        {
+          "recieveDate": "2023-05-22",
+          "recieveAmount": "7500",
+          "toRecieveDue": "700",
+          "remarks": "Paid By Party-1"
+        }
+      ],
+      "id": 1
+    }
+  ]
 }
